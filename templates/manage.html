@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Seekers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Inter&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1e1e1e;
+            padding: 10px 20px;
+            z-index: 1000;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        header h1 {
+            font-family: 'Cinzel Decorative', cursive;
+            color: #de6b00;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        nav a {
+            color: #de6b00;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 100px 20px 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        label, input, textarea, select, button {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+        input, textarea, select {
+            padding: 10px;
+            background-color: #1e1e1e;
+            border: 1px solid #444;
+            color: #fff;
+        }
+        button {
+            background-color: #de6b00;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        hr {
+            margin: 50px 0;
+            border: none;
+            border-top: 1px solid #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #444;
+        }
+        th {
+            background-color: #1b1b1b;
+            color: #de6b00;
+            text-align: left;
+        }
+        td a {
+            color: #de6b00;
+            text-decoration: none;
+        }
+        td a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Manage Seekers</h1>
+        <nav>
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/video">Post Video</a>
+            <a href="/admin/message">Send Message</a>
+            <a href="/admin/manage">Manage Seekers</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <form method="POST">
+            <label for="email">Email</label>
+            <input type="email" name="email" required>
+
+            <label for="username">Username</label>
+            <input type="text" name="username" required>
+
+            <label for="entries">Number of Entries</label>
+            <input type="number" name="entries" min="0" value="0">
+
+            <label for="notes">Notes</label>
+            <textarea name="notes" rows="3"></textarea>
+
+            <label for="links">Reference Links (comma-separated)</label>
+            <input type="text" name="links">
+
+            <button type="submit">Add Seeker</button>
+        </form>
+
+        <hr>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Entries</th>
+                    <th>Notes</th>
+                    <th>Links</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for email, user in users.items() %}
+                    <tr>
+                        <td>{{ email }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.entries|length }}</td>
+                        <td>{{ user.notes }}</td>
+                        <td>
+                            {% for link in user.links %}
+                                <a href="{{ link }}" target="_blank">Link</a><br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SAGA - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Inter&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Inter', sans-serif;
+      padding-bottom: 50px;
+    }
+    .container {
+      max-width: 800px;
+      margin-top: 50px;
+    }
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      color: #de6b00;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .prompt-box {
+      background-color: #1e1e1e;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .btn-primary {
+      background-color: #de6b00;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #c45f00;
+    }
+    .entry-log {
+      margin-top: 40px;
+    }
+    .logout {
+      text-align: right;
+      margin-top: -20px;
+    }
+    .logout a {
+      color: #de6b00;
+      font-size: 0.9em;
+    }
+    .btn-sm {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+.alert-warning {
+  background-color: #fff3cd;
+  border: 1px solid #de6b00;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logout">
+      {% if session.user %}
+        <a href="/logout">Logout</a>
+      {% endif %}
+    </div>
+
+    {% if session.user %}
+    <h1>SAGA</h1>
+
+    {% if messages %}
+  <div class="alert alert-warning mt-4 rounded shadow-sm p-4">
+    <h5 class="mb-3" style="font-weight: bold;">
+      🔥 Message from the Firekeeper
+    </h5>
+    <ul class="mb-3" style="padding-left: 1rem;">
+  {% for msg in messages %}
+    <li>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          {{ msg.text }}<br>
+          <small class="text-muted">📅 {{ msg.timestamp[:10] }}</small>
+        </div>
+        <form action="/dismiss_message/{{ loop.index0 }}" method="post" style="margin-left: 10px;">
+          <button type="submit" class="btn btn-sm btn-outline-secondary" title="Dismiss">
+            ✖
+          </button>
+        </form>
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="https://discord.com/channels/990609343693062204/1113738001185517588"
+         target="_blank"
+         class="btn btn-sm"
+         style="background-color: #de6b00; color: white; border: none;">
+         💬 Reply in Discord (SAGA Q&A)
+      </a>
+      <a href="https://discord.com/channels/990609343693062204/990609343718256659"
+         target="_blank"
+         class="btn btn-sm"
+         style="background-color: #333; color: white; border: 1px solid #de6b00;">
+         🚪 Open Support Ticket
+      </a>
+    </div>
+  </div>
+{% endif %}
+
+{% if private_videos %}
+  <div class="mt-4">
+    <h4 style="color: #de6b00;">For Your Eyes Only</h4>
+    <ul class="list-group">
+      {% for video in private_videos %}
+        <li class="list-group-item bg-dark text-white border-secondary">
+          <strong>{{ video.title }}</strong> —
+          <a href="{{ video.url }}" target="_blank" style="color: #de6b00;">Watch</a>
+          <br><small>{{ video.timestamp[:10] }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{% if public_videos %}
+  <div class="mt-4">
+    <h4 style="color: #de6b00;">Tribe-Wide Video Drops</h4>
+    <ul class="list-group">
+      {% for video in public_videos %}
+        <li class="list-group-item bg-dark text-white border-secondary">
+          <strong>{{ video.title }}</strong> —
+          <a href="{{ video.url }}" target="_blank" style="color: #de6b00;">Watch</a>
+          <br><small>{{ video.timestamp[:10] }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+      <form action="/checkin" method="post">
+        <div class="prompt-box">
+          <strong>Prompt of the Day:</strong>
+          <span id="prompt-text">Loading prompt...</span>
+          <button type="button" class="btn btn-sm btn-secondary float-end" onclick="loadPrompt()">New Prompt 🔄</button>
+        </div>
+
+        <textarea name="summary" class="form-control" rows="4" placeholder="What was your video about today?" required></textarea><br>
+        <button type="submit" class="btn btn-primary w-100">Submit Check-in</button>
+      </form>
+
+      <div class="entry-log">
+        <h4>Your Progress</h4>
+        {% if entries %}
+          <ul class="list-group">
+            {% for entry in entries %}
+              <li class="list-group-item bg-dark text-white border-secondary">
+                <strong>{{ entry.date[:10] }}</strong> — {{ entry.summary }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No check-ins yet.</p>
+        {% endif %}
+      </div>
+      {% else %}
+    <div class="text-center mt-5">
+      <h1 style="font-family: 'Cinzel Decorative', serif; color: #de6b00;">SAGA</h1>
+      <p style="margin-top: 20px; font-size: 1.25rem;">This space is for Seekers who are ready to speak their truth.</p>
+      <a href="/login" class="btn btn-primary mt-3" style="background-color: #de6b00; border: none;">Log In to Begin</a>
+    </div>
+  {% endif %}
+  </div>
+
+  <script>
+    function loadPrompt() {
+      fetch('/prompt')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('prompt-text').innerText = data.prompt;
+        });
+    }
+    window.onload = loadPrompt;
+  </script>
+</body>
+</html>
